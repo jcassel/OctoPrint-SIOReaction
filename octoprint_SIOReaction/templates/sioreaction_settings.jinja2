@@ -1,0 +1,65 @@
+<div class="row-fluid span12">
+    <div class="tabbable">
+		<h3>SIO Reaction Settings</h3>
+        <ul class="nav nav-tabs" id="siocontrol_tabs">
+			<li class="active"><a data-toggle="tab" href="#SIOReactions">Reactions</a></li>
+            <!--<li><a data-toggle="tab" href="#Testing">Testing</a></li>-->
+		</ul>
+		<div class="tab-content">
+            <div id="SIOReactions" class="tab-pane active" >
+                <div class="span12 ">
+                    <div class="row-fluid">
+                    Add a row below for each reaction you want to create. 
+                    </div>
+                    <div class="row-fluid">
+                        You can add multiple commands to a reaction. One command per line. 
+                    </div>
+                </div>
+                <div class="span12 ">
+                    <div class="span2"><h4>Name</h4></div>
+                    <div class="span2"><h4>IO#</h4></div>
+                    <div class="span2"><h4>React to</h4></div>
+                    <div class="span5"><h4>Commands</h4></div>
+                    <div class="span1"><h4></h4></div>
+                </div>
+                <div data-bind="foreach: vmsioreactions">
+                        <div class="row-fluid siocontrol-settings-row">
+                            <div class="span2">
+                                <input class="siocontrol_textName" type="text" data-bind="value: Name"/>
+                            </div>            
+                            <div class="input-prepend span2">
+                                <input class="siocontrol_InNumber" type="number" data-bind="value: Pin"/>
+                            </div>
+                            <div class="input-prepend span2">
+                                <select class="btn-group span12" data-bind="value: RType">
+                                    <option value="NONE">NONE</option>
+                                    <option value="INPUT_CHANGE">In Change</option>
+                                    <option value="INPUT_ACTIVE">In Active</option>
+                                    <option value="INPUT_NOT_ACTIVE">In Not Active</option>
+                                    <option value="OUTPUT_CHANGE">Out Change</option>
+                                    <option value="OUTPUT_ACTIVE">Out Active</option>
+                                    <option value="OUTPUT_NOT_ACTIVE">Out Not Active</option>
+                                    <option value="GCODE">GCode Command</option>
+                                </select>
+                            </div>
+                            
+                            <div class="input-prepend span5">
+                                <textarea rows="2" class="input-block-level" data-bind="value: Commands" ></textarea>
+                            </div>
+                            <div class="span1">
+                                <a title="Remove SIO Configuration" class="btn btn-danger" data-bind="click: $parent.removeReaction">
+                                    <i class="icon-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="row-fluid" >
+                    <div class="offset11 span1">
+                        <a title="Add Reaction" class="btn btn-primary" data-bind="click: addReaction"><i class="icon-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
