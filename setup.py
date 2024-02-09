@@ -5,7 +5,7 @@ from setuptools import setup
 plugin_identifier = "SIOReaction"
 plugin_package = "octoprint_SIOReaction"
 plugin_name = "SIO Reaction"
-plugin_version = "0.1.0"
+plugin_version = "0.1.1"
 plugin_description = "Sub Plugin for SIO Control (v1+). Create reactions to changes in IO, GCode, and more."
 plugin_author = "jcassel"
 plugin_author_email = "jcassel@softwaresedge.com"

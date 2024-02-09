@@ -27,7 +27,7 @@ class SIOReaction:
 
     def AddCommand(self,command):
         self.Commands.append(command)
-        self._logger.info("Added Command{} to Reaction{}".format(command,self.Name))
+        self._logger.debug("Added Command{} to Reaction{}".format(command,self.Name))
 
     def React(self):
         #do the thing or things in reaction Command

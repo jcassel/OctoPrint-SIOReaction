@@ -99,14 +99,6 @@ class SioreactionPlugin(
         except Exception:
             self._logger.exception("Error while executing callback {}".format(callback),extra={"callback": fqfn(callback)},)
 
-#    def getSIOPinConfig(self):
-#        callback = self.siocontrol_helper["get_sio_digital_pinConfig"]
-#        try:
-#            self.SIOConfiguration = callback()
-
-#        except Exception:
-#            self._logger.exception("Error while executing callback {}".format(callback),extra={"callback": fqfn(callback)},)
-
     def getPINStatus(self,pin):
         callback = self.siocontrol_helper["get_sio_digital_status"]
         try:
@@ -129,7 +121,7 @@ class SioreactionPlugin(
         self.IOState = newIOstate
         self.IOStatus = newIOStatus
         if previousIOState is not None:
-            self._logger.info("sioStateChanged: {}".format(newIOstate))
+            self._logger.debug("sioStateChanged: {}".format(newIOstate))
             for r in self.Reactions:
                 curPinState = self.IOState[r.Pin]
                 prePinState = previousIOState[r.Pin]
