@@ -13,13 +13,16 @@ $(function() {
         self.settingsViewModel = parameters[1];
         self.accessViewModel = parameters[2];
         self.controlViewModel = parameters[3];
+        self.settings = undefined;
         self.vmsioreactions = ko.observableArray();
+        self.vmsioconfiguration = ko.observableArray();
         
-
-
         // TODO: Implement your plugin's view model here.
         self.onBeforeBinding = function () {
+            self.settings = self.settingsViewModel.settings;
             self.vmsioreactions(self.settingsViewModel.settings.plugins.SIOReaction.sioreactions.slice(0));
+            self.vmsioconfiguration(self.settings.plugins.siocontrol.sio_configurations.slice(0));
+            //self.vmsioconfiguration(self.settingsViewModel.settings.plugins.SIOReaction.sioconfiguration.slice(0));
         };
 
         self.onSettingsBeforeSave = function () {
@@ -28,10 +31,12 @@ $(function() {
         
         self.onSettingsShown = function () {
             self.vmsioreactions(self.settingsViewModel.settings.plugins.SIOReaction.sioreactions.slice(0));
+            self.vmsioconfiguration(self.settings.plugins.siocontrol.sio_configurations.slice(0));
         };
         
         self.onSettingsHidden = function () {
             self.vmsioreactions(self.settingsViewModel.settings.plugins.SIOReaction.sioreactions.slice(0));
+            self.vmsioconfiguration(self.settings.plugins.siocontrol.sio_configurations.slice(0));
         };
 
         self.addReaction = function () {
@@ -42,6 +47,10 @@ $(function() {
             self.vmsioreactions.remove(reaction);
         };
 
+        self.getConfiguredIO = function(){
+            self.vmsioconfiguration(self.settingsViewModel.settings.plugins.siocontrol.sio_configurations.slice(0));
+            return self.vmsioconfiguration;
+        }
 
     }
 

@@ -26,11 +26,12 @@ class SioreactionPlugin(
         self.IOState = ""
         self.IOStatus = []
         self.Reactions = []
+        self.SIOConfiguration = []
         self.siocontrol_helper = None
 
     def get_settings_defaults(self):
         return dict(
-            sioreactions=[]
+            sioreactions=[],
         )
 
     def reload_settings(self):
@@ -61,7 +62,8 @@ class SioreactionPlugin(
         self.updateReactions()
         return super().on_settings_save(data)
 
-    def updateReactions(self):
+    def updateReactions(self): 
+        # synctronize/replaces the server side list of reactions from any changes made by browser client.
         self.Reactions.clear()
         for r in self._settings.get(["sioreactions"]):
             reaction = SIOReaction.SIOReaction(self,r["Name"],int(r["Pin"]),r["RType"])
@@ -97,6 +99,14 @@ class SioreactionPlugin(
         except Exception:
             self._logger.exception("Error while executing callback {}".format(callback),extra={"callback": fqfn(callback)},)
 
+#    def getSIOPinConfig(self):
+#        callback = self.siocontrol_helper["get_sio_digital_pinConfig"]
+#        try:
+#            self.SIOConfiguration = callback()
+
+#        except Exception:
+#            self._logger.exception("Error while executing callback {}".format(callback),extra={"callback": fqfn(callback)},)
+
     def getPINStatus(self,pin):
         callback = self.siocontrol_helper["get_sio_digital_status"]
         try:
@@ -108,7 +118,11 @@ class SioreactionPlugin(
 
         return pinStatus
 
-    #event
+    #  events
+    #def hook_sio_serial_stream(self,line):
+    #   self._logger.info("SIOReaction hook_sio_serial_Stream: {}".format(line))
+
+
     def sioStateChanged(self,newIOstate,newIOStatus):
         previousIOState = self.IOState
         #previousIOStatus = self.IOStatus
