@@ -30,21 +30,22 @@ class SIOReaction:
         self._logger.debug("Added Command{} to Reaction{}".format(command,self.Name))
 
     def React(self):
-        #do the thing or things in reaction Command
-
-        match self.RType:
-            case SIOReactionType.SIOReactionType.INPUT_ACTIVE:
-                self._logger.debug("Executing Reaction to INPUT_ACTIVE {}".format(self.Pin))
-            case SIOReactionType.SIOReactionType.INPUT_NOT_ACTIVE:
-                self._logger.debug("Executing Reaction to INPUT_NOT_ACTIVE {}".format(self.Pin))
-            case SIOReactionType.SIOReactionType.INPUT_CHANGE:
-                self._logger.debug("Executing Reaction to INPUT_CHANGE {}".format(self.Pin))
-            case SIOReactionType.SIOReactionType.OUTPUT_ACTIVE:
-                self._logger.debug("Executing Reaction to OUTPUT_ACTIVE {}".format(self.Pin))
-            case SIOReactionType.SIOReactionType.OUTPUT_NOT_ACTIVE:
-                self._logger.debug("Executing Reaction to OUTPUT_NOT_ACTIVE {}".format(self.Pin))
-            case SIOReactionType.SIOReactionType.OUTPUT_CHANGE:
-                self._logger.debug("Executing Reaction to OUTPUT_CHANGE {}".format(self.Pin))
+        # do the thing or things in reaction Command
+        # really would have wanted to do a match here but comparibily is not good enough yet.
+        if self.RType == SIOReactionType.SIOReactionType.INPUT_ACTIVE:
+            self._logger.debug("Executing Reaction to INPUT_ACTIVE {}".format(self.Pin))
+        elif self.RType == SIOReactionType.SIOReactionType.INPUT_NOT_ACTIVE:
+            self._logger.debug("Executing Reaction to INPUT_NOT_ACTIVE {}".format(self.Pin))
+        elif self.RType == SIOReactionType.SIOReactionType.INPUT_CHANGE:
+            self._logger.debug("Executing Reaction to INPUT_CHANGE {}".format(self.Pin))
+        elif self.RType == SIOReactionType.SIOReactionType.OUTPUT_ACTIVE:
+            self._logger.debug("Executing Reaction to OUTPUT_ACTIVE {}".format(self.Pin))
+        elif self.RType == SIOReactionType.SIOReactionType.OUTPUT_NOT_ACTIVE:
+            self._logger.debug("Executing Reaction to OUTPUT_NOT_ACTIVE {}".format(self.Pin))
+        elif self.RType == SIOReactionType.SIOReactionType.OUTPUT_CHANGE:
+            self._logger.debug("Executing Reaction to OUTPUT_CHANGE {}".format(self.Pin))
+        else:
+            self._logger.debug("Executing Reaction to something unexpected? {}".format(self.Pin))
 
         for command in self.Commands:
             if command[:2] == "IO":  # change an IO point (outputs)

@@ -114,7 +114,6 @@ class SioreactionPlugin(
     #def hook_sio_serial_stream(self,line):
     #   self._logger.info("SIOReaction hook_sio_serial_Stream: {}".format(line))
 
-
     def sioStateChanged(self,newIOstate,newIOStatus):
         previousIOState = self.IOState
         #previousIOStatus = self.IOStatus
