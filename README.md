@@ -15,7 +15,6 @@ Do things like:
 - Have a relay turn on when specific GCode is seen. 
 - If a limit switch is hit, send some GCode to the GCode queue. 
 
-
 ## Install
 
 Install via the bundled [Plugin Manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html)
@@ -40,4 +39,10 @@ Setting up a Reaction is simple. Follow these steps.
     - __Out Change__ React when this IO Output point changes state
     - __Out Active__ React when this IO Output point changes from Not Active to Active
     - __Out Not Active__ React when this IO Output point changes from Active to Not Active
-    - __GCode Command__ React when a specific GCode command is detected. 
+    - __GCode Command__ React when a specific GCode command is detected.
+ 
+
+## UI Samples
+![Settings](/assets/img/SettingsExample.png)
+
+![Help](/assets/img/HelpScrn.png)
