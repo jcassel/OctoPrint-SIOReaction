@@ -26,6 +26,7 @@ class SioreactionPlugin(
         self.IOState = ""
         self.IOStatus = []
         self.Reactions = []
+        self.GCReactions = []  # Special list for reactions that look at the GCode stream.
         self.SIOConfiguration = []
         self.siocontrol_helper = None
 
@@ -62,14 +63,19 @@ class SioreactionPlugin(
         self.updateReactions()
         return super().on_settings_save(data)
 
-    def updateReactions(self): 
+    def updateReactions(self):
         # synctronize/replaces the server side list of reactions from any changes made by browser client.
         self.Reactions.clear()
+        self.GCReactions.clear()
         for r in self._settings.get(["sioreactions"]):
             reaction = SIOReaction.SIOReaction(self,r["Name"],int(r["Pin"]),r["RType"])
             commands = r["Commands"].splitlines()
             for cmd in commands:
                 reaction.AddCommand(cmd)
+
+            #Check if this reaction is a GCode reaction. If it is,add it to a special list.
+            if reaction.RType == SIOReactionType.SIOReactionType.GCODE:
+                self.GCReactions.append(reaction)
 
             self.Reactions.append(reaction)
         return
@@ -122,40 +128,42 @@ class SioreactionPlugin(
         if previousIOState is not None:
             self._logger.debug("sioStateChanged: {}".format(newIOstate))
             for r in self.Reactions:
-                curPinState = self.IOState[r.Pin]
-                prePinState = previousIOState[r.Pin]
-                if curPinState != prePinState:
-                    if r.RType == SIOReactionType.SIOReactionType.INPUT_CHANGE or r.RType == SIOReactionType.SIOReactionType.OUTPUT_CHANGE :
-                        self._logger.debug("Reacting to IO State(in or out) Change")
-                        r.React()
+                if r.RType != SIOReactionType.SIOReactionType.GCODE:  # skip this type it does not react to IO changes.
+                    curPinState = self.IOState[r.Pin]
+                    prePinState = previousIOState[r.Pin]
+                    if curPinState != prePinState:
+                        if r.RType == SIOReactionType.SIOReactionType.INPUT_CHANGE or r.RType == SIOReactionType.SIOReactionType.OUTPUT_CHANGE :
+                            self._logger.debug("Reacting to IO State(in or out) Change")
+                            r.React()
 
-                    if r.RType == SIOReactionType.SIOReactionType.INPUT_ACTIVE and self.IOStatus[r.Pin] == "on" :
-                        self._logger.debug("Reacting to IO Pin{} changed to Active".format(r.Pin))
-                        r.React()
+                        if r.RType == SIOReactionType.SIOReactionType.INPUT_ACTIVE and self.IOStatus[r.Pin] == "on" :
+                            self._logger.debug("Reacting to IO Pin{} changed to Active".format(r.Pin))
+                            r.React()
 
-                    if r.RType == SIOReactionType.SIOReactionType.INPUT_NOT_ACTIVE and self.IOStatus[r.Pin] == "off" :
-                        self._logger.debug("Reacting to IO Pin{} changed to NOT_Active".format(r.Pin))
-                        r.React()
+                        if r.RType == SIOReactionType.SIOReactionType.INPUT_NOT_ACTIVE and self.IOStatus[r.Pin] == "off" :
+                            self._logger.debug("Reacting to IO Pin{} changed to NOT_Active".format(r.Pin))
+                            r.React()
 
-                    if r.RType == SIOReactionType.SIOReactionType.OUTPUT_ACTIVE and self.IOStatus[r.Pin] == "on" :
-                        self._logger.debug("Reacting to IO Pin{} changed to Active".format(r.Pin))
-                        r.React()
+                        if r.RType == SIOReactionType.SIOReactionType.OUTPUT_ACTIVE and self.IOStatus[r.Pin] == "on" :
+                            self._logger.debug("Reacting to IO Pin{} changed to Active".format(r.Pin))
+                            r.React()
 
-                    if r.RType == SIOReactionType.SIOReactionType.OUTPUT_NOT_ACTIVE and self.IOStatus[r.Pin] == "off" :
-                        self._logger.debug("Reacting to IO Pin{} changed to NOT_Active".format(r.Pin))
-                        r.React()
+                        if r.RType == SIOReactionType.SIOReactionType.OUTPUT_NOT_ACTIVE and self.IOStatus[r.Pin] == "off" :
+                            self._logger.debug("Reacting to IO Pin{} changed to NOT_Active".format(r.Pin))
+                            r.React()
 
     def hook_gcode_queuing(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
         skipQueuing = False
+        if len(self.GCReactions) == 0:
+            return
 
         if not gcode:
             gcode = cmd.split(' ', 1)[0]
 
-        for r in self.Reactions:
-            if r.RType == SIOReactionType.SIOReactionType.GCODE:
-                if gcode == r.Commands[0]:
-                    self._logger.debug("Reacting to GCODE{}".format(r.Commands[0]))
-                    r.React()
+        for r in self.GCReactions:
+            if gcode == r.Commands[0]:
+                self._logger.debug("Reacting to GCODE{}".format(r.Commands[0]))
+                r.React()
 
         if skipQueuing:
             return (None,)
