@@ -50,7 +50,7 @@ $(function() {
         self.getConfiguredIO = function(){
             self.vmsioconfiguration(self.settingsViewModel.settings.plugins.siocontrol.sio_configurations.slice(0));
             return self.vmsioconfiguration;
-        }
+        };
 
     }
 

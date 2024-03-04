@@ -4,13 +4,15 @@
 
 #import octoprint.plugin
 #from octoprint.settings import settings
+import threading
+import time
 from octoprint.util import fqfn
 
 from . import SIOReactionType
 
 
 class SIOReaction:
-    def __init__(self, plugin,name,pin,rtype):
+    def __init__(self, plugin, name, pin, rtype):
         self.Name = name
         self.Pin = pin
         self.RType = SIOReactionType.SIOReactionType[rtype]
@@ -25,9 +27,9 @@ class SIOReaction:
         self._settings = plugin._settings
         self.plugin = plugin
 
-    def AddCommand(self,command):
+    def AddCommand(self, command):
         self.Commands.append(command)
-        self._logger.debug("Added Command{} to Reaction{}".format(command,self.Name))
+        self._logger.debug("Added Command{} to Reaction{}".format(command, self.Name))
 
     def React(self):
         # do the thing or things in reaction Command
@@ -46,11 +48,16 @@ class SIOReaction:
             self._logger.debug("Executing Reaction to OUTPUT_CHANGE {}".format(self.Pin))
         else:
             self._logger.debug("Executing Reaction to something unexpected? {}".format(self.Pin))
+        
+        thread = threading.Thread(target=self.CommadExecution_thread)
+        thread.start()
 
+    def CommadExecution_thread(self):
+        self._logger.debug("Executing Commands for Reaction <{}>".format(self.Name))
         for command in self.Commands:
             if command[:2] == "IO":  # change an IO point (outputs)
                 if "set_sio_digital_state" in self.plugin.siocontrol_helper.keys():
-                    self._logger.debug("Executing Command \"{}\" for Reaction <{}>".format(command,self.Name))
+                    self._logger.debug("Executing Command \"{}\" for Reaction <{}>".format(command, self.Name))
                     callback = self.plugin.siocontrol_helper["set_sio_digital_state"]
                     try:
                         action = command[4:][2:]
@@ -61,18 +68,27 @@ class SIOReaction:
                             else:
                                 action = "on"
 
-                        self.plugin.IOState = callback(pin,action)
+                        self.plugin.IOState = callback(pin, action)
 
                     except Exception:
-                        self._logger.exception("Error while executing callback {}".format(callback),extra={"callback": fqfn(callback)},)
+                        self._logger.exception("Error while executing callback {}".format(callback), extra={"callback": fqfn(callback)},)
 
                 else:
-                    self._logger.debug("Can't find the proper method in siocontrol_helper \"set_sio_digital_state\" for Reaction{},Command{}".format(self.Name,command))
-                    self._logger.debug("Executing Command \"{}\" for Reaction <{}>".format(command,self.Name))
+                    self._logger.debug("Can't find the proper method in siocontrol_helper \"set_sio_digital_state\" for Reaction{},Command{}".format(self.Name, command))
+                    self._logger.debug("Executing Command \"{}\" for Reaction <{}>".format(command, self.Name))
 
             elif command[:2] == "GC":   # inject some gcode into the flow
-                self._logger.debug("Executing Command \"{}\" for Reaction <{}>".format(command,self.Name))
+                self._logger.debug("Executing Command \"{}\" for Reaction <{}>".format(command, self.Name))
                 self._printer.commands(command[3:])
+
+            elif command[:2] == "WT":  # wait command
+                self._logger.debug("Executing Command \"{}\" for Reaction <{}>".format(command, self.Name))
+                sleep_time = command[3:]
+                if not sleep_time.isnumeric() or isinstance(sleep_time, float) or (isinstance(sleep_time, int) and int(sleep_time) < 1):
+                    self._logger.info("Invalid Wait Time \"{}\" for Reaction <{}>, value must be a whole number greater than 0".format(command, self.Name))
+                else:
+                    time.sleep(int(sleep_time))
+
             else:
                 if self.RType != SIOReactionType.SIOReactionType.GCODE and command.index == 0:  # ignore the first command when a GCode reaction type
-                    self._logger.debug("Invalid Command \"{}\" for Reaction <{}>".format(command,self.Name))
+                    self._logger.info("Invalid Command \"{}\" for Reaction <{}>".format(command, self.Name))
