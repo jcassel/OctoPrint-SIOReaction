@@ -39,6 +39,17 @@
                         <div class="span4">Example (detects gcode "M80" was sent to OctoPrint and turns on IO pin 11):</div><div class="span8 border"><strong>M80<br/>IO 11 on</strong></div>
                     </div>    
                     <div class="span12"></div>
+                    <div class="span12">"WT": Add a wait time(seconds) during command list execution.</div>
+                    <div class="span12">
+                        <div class="span4">General use case: Example (causes a 10 second delay):</div><div class="span8 border"><strong>WT 10</strong></div>
+                    </div>    
+                    <div class="span12"></div>
+                    <div class="span12">
+                        <div class="span4">Example (turns on an IO point 13 and then waits 5 seconds and turns it off again):</div>
+                        <div class="span8 border"><p><strong>IO 13 on</strong><br/><strong>WT 5</strong><br/><strong>IO 13 off</strong></p></div>
+                    </div>
+                    <div class="span12"></div>
+                    <div class="span12"></div>
 
 
 
