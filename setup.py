@@ -5,13 +5,13 @@ from setuptools import setup
 plugin_identifier = "SIOReaction"
 plugin_package = "octoprint_SIOReaction"
 plugin_name = "SIO Reaction"
-plugin_version = "0.1.5"
+plugin_version = "0.1.6"
 plugin_description = "Sub Plugin for SIO Control (v1+). Create reactions to changes in IO, GCode, and more."
 plugin_author = "jcassel"
 plugin_author_email = "jcassel@softwaresedge.com"
 plugin_url = "https://github.com/jcassel/OctoPrint-SIOReaction"
 plugin_license = "AGPLv3"
-# plugin_requires = []
+#plugin_requires = []
 plugin_requires = ["SIO-Control@https://github.com/jcassel/OctoPrint-Siocontrol/archive/main.zip"]
 plugin_additional_data = []
 plugin_additional_packages = []

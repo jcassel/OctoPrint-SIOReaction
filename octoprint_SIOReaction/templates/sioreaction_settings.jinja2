@@ -18,14 +18,18 @@
                     <h4>Command formating:</h4>
                 </div>  
                 <div class="row-fluid">
-                    One command per new line in the command text box. Each command line must be prefixed with 
-                    2 characters that indicate what type of command it is.
+                    One command per new line in the command text box. 
+                    Each command line must be prefixed with 2 characters that indicate what type of command it is. 
+                    When using IO point numbers, you must use 2 digits. IO1 would be IO 01.
                 </div>
                 <div class="row-fluid">
                     <div class="span12"></div>
                     <div class="span12">"IO": Manupulate an IO point. This is only valid for configured output types.</div>
                     <div class="span12">
                         <div class="span4">Example (turns on IO point 11):</div><div class="span8 border"><strong>IO 11 on</strong></div>
+                    </div>    
+                    <div class="span12">
+                        <div class="span4">Example (toggles IO point 3):</div><div class="span8 border"><strong>IO 03 toggle</strong></div>
                     </div>    
                     <div class="span12">IO supported actions 'on','off', and 'toggle'</div>
                     <div class="span12"></div>
