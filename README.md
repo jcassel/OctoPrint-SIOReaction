@@ -40,7 +40,11 @@ Setting up a Reaction is simple. Follow these steps.
     - __Out Active__ React when this IO Output point changes from Not Active to Active
     - __Out Not Active__ React when this IO Output point changes from Active to Not Active
     - __GCode Command__ React when a specific GCode command is detected.
- 
+
+Note that when creating a reaction the format must follow a few rules. 
+- All key words are case sensitive.
+  - on, off, toggle, IO, GC, WT are all key words used when creating a reaction.
+  - When identifying an IO Point, it must be 2 characters in length. Example: IO point 1 is "01"
 
 ## UI Samples
 ![Settings](/assets/img/SettingsExample.png)
