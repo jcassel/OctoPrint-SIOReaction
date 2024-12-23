@@ -4,6 +4,7 @@
  * Author: John Cassel
  * License: MIT
  */
+
 $(function() {
     function SioreactionViewModel(parameters) {
         var self = this;
@@ -49,11 +50,13 @@ $(function() {
 
         self.getConfiguredIO = function(){
             self.vmsioconfiguration(self.settingsViewModel.settings.plugins.siocontrol.sio_configurations.slice(0));
+            // self.sioConfigurations.push({ pin: 0, icon: "fas fa-plug", name: "", active_mode: "active_out_high", default_state: "default_off", on_nav: 0,on_side:0,inmin:0,inmax:0,outmin:0,outmax:0 });
+            self.vmsioconfiguration.push({ pin: -1, icon: "fas fa-plug", name: "None", active_mode: "active_in_high", default_state: "default_off", on_nav: 0,on_side:0,inmin:0,inmax:0,outmin:0,outmax:0 });
             return self.vmsioconfiguration;
         };
 
-    }
 
+    }
 
     /* view model class, parameters for constructor, container to bind to
      * Please see http://docs.octoprint.org/en/master/plugins/viewmodels.html#registering-custom-viewmodels for more details
@@ -66,4 +69,7 @@ $(function() {
         // Elements to bind to, e.g. #settings_plugin_SIOReaction, #tab_plugin_SIOReaction, ...
         elements: ["#settings_plugin_SIOReaction"]
     });
+
+    
 });
+

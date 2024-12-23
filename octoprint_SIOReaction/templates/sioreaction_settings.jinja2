@@ -8,57 +8,33 @@
 		<div class="tab-content">
             <div id="sior_Help" class="tab-pane">
                 <div class="row-fluid">
-                    Each reaction is run seperatly and each line in the commans of the Reaction is run seperately. They are run in the order that they are entered into the list. 
-                    You can add more than one reaction for the same SIOControl Configured IO point.
-                    Note that you can only select IO points that have been configured in the SIOControl Plugin. 
-                    GCODE reactions ignore the IO# (pin) setting and use the first line in the command list as the gcode 
-                    used to trigger the reaction. 
-                </div>
-                <div class="row-fluid">
-                    <h4>Command formating:</h4>
-                </div>  
-                <div class="row-fluid">
-                    One command per new line in the command text box. 
-                    Each command line must be prefixed with 2 characters that indicate what type of command it is. 
-                    When using IO point numbers, you must use 2 digits. IO1 would be IO 01.
-                </div>
-                <div class="row-fluid">
-                    <div class="span12"></div>
-                    <div class="span12">"IO": Manupulate an IO point. This is only valid for configured output types.</div>
-                    <div class="span12">
-                        <div class="span4">Example (turns on IO point 11):</div><div class="span8 border"><strong>IO 11 on</strong></div>
-                    </div>    
-                    <div class="span12">
-                        <div class="span4">Example (toggles IO point 3):</div><div class="span8 border"><strong>IO 03 toggle</strong></div>
-                    </div>    
-                    <div class="span12">IO supported actions 'on','off', and 'toggle'</div>
-                    <div class="span12"></div>
-                    <div class="span12">"GC": Send GCode to GCode queue. </div> 
-                    <div class="span12">
-                        <div class="span4">Example (sends gcode to gcode queue):</div><div class="span8 border"><strong>GC M118 Text for Printer</strong></div>
-                    </div>    
-                    <div class="span12"></div>
-                    <div class="span12">React to sent GCode</div> 
-                    <div class="span12">
-                        <div class="span4">Example (detects gcode "M80" was sent to OctoPrint and turns on IO pin 11):</div><div class="span8 border"><strong>M80<br/>IO 11 on</strong></div>
-                    </div>    
-                    <div class="span12"></div>
-                    <div class="span12">"WT": Add a wait time(seconds) during command list execution.</div>
-                    <div class="span12">
-                        <div class="span4">General use case: Example (causes a 10 second delay):</div><div class="span8 border"><strong>WT 10</strong></div>
-                    </div>    
-                    <div class="span12"></div>
-                    <div class="span12">
-                        <div class="span4">Example (turns on an IO point 13 and then waits 5 seconds and turns it off again):</div>
-                        <div class="span8 border"><p><strong>IO 13 on</strong><br/><strong>WT 5</strong><br/><strong>IO 13 off</strong></p></div>
-                    </div>
-                    <div class="span12"></div>
-                    <div class="span12"></div>
 
-
-
+                    <p>Reactions are small scripts that can be run when an event happens. Each script runs separately. If 2 scripts are triggered by the same event they will run almost simultaneously. Each reaction has a name this must be unique. Try to make it a little descriptive but not too long, 16 or lesss characters is a good lengh. Each reaction script must react to something. There are several types of events that can be used as the reaction trigger. Each reaction has an associated script. Some scripts are a simple list of commands. Others take parameters from the first line of the script and run the rest of the script.</p>
+                    
+                    <h2>Reaction Types</h2>
+                    <ul>
+                        <li><strong>In Active:</strong> Runs the reaction script when the selected SIO point is an Input and its state becomes active. Can only be used with configured Input SIO points.</li>
+                        <li><strong>In Not Active:</strong> Runs the reaction script when the selected SIO point is an Input and its state becomes active. Can only be used with configured Input SIO points.</li>
+                        <li><strong>In Change:</strong> Runs the reaction script when the selected SIO point changes state. Can only be used with configured Input SIO points.</li>
+                        <li><strong>NONE:</strong> Disables the reaction script. wiht nothing to trigger it, it will never be triggered.</li>
+                        <li><strong>Out Active:</strong> Runs the reaction script when the selected SIO point is an Input and its state becomes active. Can only be used with configured Output SIO points.</li>
+                        <li><strong>Out Not Active:</strong> Runs the reaction script when the selected SIO point is an Input and its state becomes active. Can only be used with configured Output SIO points.</li>
+                        <li><strong>Out Change:</strong> Runs the reaction script when the selected SIO point changes state. Can only be used with configured Output SIO points.</li>
+                        <li><strong>GCode Command:</strong> Runs the reaction script when a specific GCode* command is seen being sent to the printer. The command that triggers the reaction is taken from the first line in the script. The SIO Point is not used for this reaction. The selected SIO Point value will be ignored.</li>
+                        <li><strong>Repeated Timer:</strong> Runs the reaction script at an interval. The interval is set in seconds and is set using the first line in the script. It can be an integer between 1 and 86400. All subsequent commands are run at this repeating interval. The selected SIO Point value will be ignored. The intervals are not real time. They may vary slightly depending on the load and power of your compute device.</li>
+                    </ul>
+                    
+                    <h2>Reaction Script Commands</h2>
+                    <ul>
+                        <li><strong>Set IO state {IO}:</strong> <i style="color: #005580;">Format: IO [sio point number] [on off toggle].</i><br/>Use the IO command to set the state of a configured SIO digital output point. You can set it to on, off or toggle.<br/>Example: IO 11 on<br/>Sets SIO Point 11 active.</li>
+                        <li><strong>Send Gcode command {GC}:</strong> <i style="color: #005580;">Format: GC [gcode command].</i><br/>This command will send the gcode command listed to the printer.<br/>Example: GC M118 Reaction triggered<br/>Send M118 gcode command to the printer with the text “Reaction triggered”.</li>
+                        <li><strong>Wait {WT}:</strong> <i style="color: #005580;">Format: WT [integer 1-86400].</i><br/>Example: WT 5 <br/>Script execution will wait 5 seconds before continuing to the next line in the script.</li>
+                        <li><strong>Temperature control {TC}:</strong><i style="color: #005580;"> Format: TC InIO:[DHT sio point number] OnAt:[int -10 to 200] OffAt:[int -10 to 200] OutIO: [sio point number].</i><br/>Example: TC InIO:4 OnAt:55 OffAt:65 OutIO:12<br/>Sets a temperature region for a DHT sensor on SIO 4. It will set the SIOPoint 11 Active when the temp falls below 55°C and will set it to InActive when the temperature reaches 65°C.</li>
+                        <!--<li><strong>Message UI {MU}:</strong><i style="color: #005580;"> Format: MU [message text].</i><br/>Example: MU Reaction was triggered.<br/>Pops up a message in the OctoPrint UI with the text “Reaction was triggered”.</li>-->
+                    </ul>
                 </div>
             </div>
+
 
             <div id="SIOReactions" class="tab-pane active" >
                 <div class="span12 ">
@@ -104,6 +80,7 @@
                                     <option value="OUTPUT_ACTIVE">Out Active</option>
                                     <option value="OUTPUT_NOT_ACTIVE">Out Not Active</option>
                                     <option value="GCODE">GCode Command</option>
+                                    <option value="TIMER">Repeated Timer</option>
                                 </select>
                             </div>
                             

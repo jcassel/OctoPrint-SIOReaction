@@ -10,3 +10,4 @@ class SIOReactionType(Enum):
     OUTPUT_NOT_ACTIVE = 5
     OUTPUT_CHANGE = 6
     GCODE = 7
+    TIMER = 8 
