@@ -232,6 +232,10 @@ class SioreactionPlugin(
             }
         }
 
+    def is_api_protected(self):
+        """Require authentication for API access."""
+        return True
+
 
 __plugin_name__ = "SIO Reaction"
 __plugin_pythoncompat__ = ">=3,<4"  # Only Python 3
