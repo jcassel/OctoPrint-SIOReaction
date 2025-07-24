@@ -168,6 +168,12 @@ class SioreactionPlugin(
         if skipQueuing:
             return (None,)
 
+
+    def is_api_protected(self):
+        return True
+
+
+
     ##~~ AssetPlugin mixin
     def get_assets(self):
         # Define your plugin's asset files to automatically include in the
